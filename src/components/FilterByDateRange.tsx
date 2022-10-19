@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import DatePicker from "react-datepicker";
 import {changePopUpCalendar, filterDateTransaction} from "../store/slice";
 import {useDispatch} from "react-redux";
@@ -10,21 +10,24 @@ export const FilterByDateRange = () => {
     const dispatch = useDispatch()
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
-    const onChange = (dates: any) => {
+    const onChange = useCallback((dates: any) => {
         const [start, end] = dates;
         setStartDate(start);
         setEndDate(end);
         if (start !== null && end !== null) {
             dispatch(filterDateTransaction({start, end}))
             dispatch(changePopUpCalendar(false))
-        }}
-
+        }},[startDate,endDate])
+    const handleKeyDown=(e:string)=>{
+        if (e === 'Escape'){
+            dispatch(changePopUpCalendar(false))
+        }
+    }
 
     return (
-            <Container>
+            <Container tabIndex={0} onKeyDown={(e)=>handleKeyDown(e.key)}>
                 <DatePicker
                     id='box'
-                    selected={null}
                     onChange={onChange}
                     placeholderText="Select Custom date"
                     startDate={startDate}

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import styled from "styled-components";
 import Select from "react-select";
 import coffee from '../images/coffee.png'
@@ -46,10 +46,8 @@ const SelectWrapper = styled(Select)`
   .Select__indicator-separator {
     display: none;
   }
-  
 `
-
-const options = [
+const optionsExpense = [
     {
         value: 'Rental',
         label: <IconWrapper><ImageWrapper src={rental} height="30px" width="30px"/>Rentals</IconWrapper>,
@@ -130,34 +128,28 @@ export type PropsType ={
 }
 export const SelectCategoryForm = (props:PropsType) => {
     const [category, setCategory] =useState()
-    const onChangeHandler =(e:any)=>{
+
+    const getValue = useCallback(() => {
+        return category
+            ? optionsExpense.find(c => c.value === category)
+            :optionsIncome.find(c => c.value === category)
+    },[category])
+
+    const onChangeHandler = useCallback((e:any )=>{
         setCategory(e.constructor)
         props.category(e.value,e.src)
-    }
+    },[category])
 
-    const getValue = () => {
-        return category
-            ? options.find(c => c.value === category)
-            :optionsIncome.find(c => c.value === category)
-    }
+    const options = props.isExpense ? optionsExpense : optionsIncome
 
     return (
         <div>
-            {props.isExpense
-               ? <SelectWrapper placeholder='Category'
+             <SelectWrapper placeholder='Category'
                                              classNamePrefix="Select"
                                              value={getValue()}
                                              isSearchable={false}
                                              onChange={onChangeHandler}
                                              options={options}/>
-                :<SelectWrapper placeholder='Category'
-                                classNamePrefix="Select"
-                                value={getValue()}
-                                isSearchable={false}
-                                onChange={onChangeHandler}
-                                options={optionsIncome}/>
-            }
-
         </div>
     );
 };

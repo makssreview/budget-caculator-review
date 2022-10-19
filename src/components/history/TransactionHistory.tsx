@@ -9,7 +9,7 @@ export interface ColorProps {
 }
 
 export const TransactionHistory = () => {
-    let transactions = useSelector<AppRootStateType, Array<TransactionType>>(state => state.transaction.copyOfTransactions)
+    const transactions = useSelector<AppRootStateType, Array<TransactionType>>(state => state.transaction.copyOfTransactions)
     const dispatch = useDispatch()
     return (
         <Container>
@@ -65,8 +65,10 @@ const DateWrapper = styled.div`
 const TextWrapper = styled.div`
   font-size: 14px;
   padding: 12px 20px;
-  opacity: 0.7;
-  color: #008000FF;
+  opacity: 0.9;
+  color: rgba(28, 108, 68, 0.68);
+  position: absolute;
+  left: 200px;
   width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;

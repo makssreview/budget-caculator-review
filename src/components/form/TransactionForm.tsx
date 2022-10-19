@@ -1,12 +1,10 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, SetStateAction, useState} from 'react';
 import styled from "styled-components";
 import {useDispatch} from "react-redux";
 import {addTransaction, changePopUp} from "../../store/slice";
 import DatePicker from "react-datepicker";
 import {FaWindowClose} from "react-icons/fa";
 import {SelectCategoryForm} from "./SelectCategoryForm";
-
-
 
 
 export const TransactionForm = () => {
@@ -16,24 +14,35 @@ export const TransactionForm = () => {
     const [popUpForm, setPopUpForm] = useState(false)
     const [category, setCategory] = useState({value: '', src: ''})
     const [expense, setExpense] = useState(false)
+    const [error, setError] = useState(false)
     const dispatch = useDispatch()
 
+
     const onClickHandler = () => {
-        if(category.value !== '' && amount !==0){
-            dispatch(addTransaction({text, amount, date, category}))
+        const newTransaction = {
+            text: text,
+            amount: amount,
+            date: date,
+            category: category
         }
-        setText('')
-        setAmount(0)
-        setStartDate(new Date("2/01/22"))
-        setPopUpForm(false)
-        setCategory({value: '', src: ''})
-        dispatch(changePopUp(popUpForm))
+        if (category.value && amount !== 0) {
+            dispatch(addTransaction(newTransaction))
+            setText('')
+            setAmount(0)
+            setStartDate(new Date())
+            setPopUpForm(false)
+            setCategory({value: '', src: ''})
+            dispatch(changePopUp(popUpForm))
+            setError(false)
+        }
+        setError(true)
     }
 
     const onPopUpHandler = () => {
         //Close Transaction form
         setPopUpForm(false)
         dispatch(changePopUp(popUpForm))
+
     }
     const ExpenseHandler = () => {
         //Change Button
@@ -41,30 +50,42 @@ export const TransactionForm = () => {
         setExpense(!expense)
     }
     const AmountHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!expense){
-            setAmount(+e.target.value)
-        }else {
-            setAmount(-Math.abs(+e.target.value))
+        if (!expense) {
+            setAmount(Number(e.target.value))
+        } else {
+            setAmount(-Math.abs(Number(e.target.value)))
         }
     }
 
     //get from SelectCategoryForm value and src and set as an Object
-    const categoryItems =(value:string,src:string)=>{
+    const categoryItems = (value: string, src: string) => {
         setCategory({value, src})
+    }
+    const buttonNameChange = () => {
+        return expense ? 'Expense' : 'Income'
+    }
+
+    const onDateHandler = (e: SetStateAction<Date>) => {
+        setStartDate(e)
+    }
+    const handleKeyDown = (e: string) => {
+        if (e === 'Escape') {
+            onPopUpHandler()
+        }
+        if (e === 'Enter') {
+            onClickHandler()
+        }
     }
 
     return (
-        <Container>
+        <Container tabIndex={0} onKeyDown={(e) => handleKeyDown(e.key)}>
             <Wrapper>
                 <TitleWrapper>Add transaction</TitleWrapper>
                 <ButtonWrapper>
                     <FaWindowClose onClick={onPopUpHandler}/>
                 </ButtonWrapper>
                 <InputWrapper>
-                    {expense
-                        ? <ExpenseWrapper onClick={ExpenseHandler}>Expense</ExpenseWrapper>
-                        : <ExpenseWrapper onClick={ExpenseHandler}>Income</ExpenseWrapper>
-                    }
+                    <ExpenseWrapper onClick={ExpenseHandler}>{buttonNameChange()}</ExpenseWrapper>
                     <SelectCategoryForm category={categoryItems} isExpense={expense}/>
                     <CategoryWrapper type='number' value={amount}
                                      onChange={AmountHandler}
@@ -73,13 +94,14 @@ export const TransactionForm = () => {
                 <InputWrapper>
                     <DateWrapper closeOnScroll={true}
                                  selected={date}
-                                 onChange={(date: Date) => setStartDate(date)}/>
+                                 onChange={(e: Date) => onDateHandler(e)}/>
                     <CategoryWrapper onChange={(e) => setText(e.target.value)}
                                      placeholder='Note'/>
                 </InputWrapper>
                 <AddButtonWrapper>
                     <Button onClick={onClickHandler}>Add</Button>
                     <Button onClick={onPopUpHandler}>Cancel</Button>
+                    {error && <ErrorWrapper> Please chose Category/Enter Amount</ErrorWrapper>}
                 </AddButtonWrapper>
             </Wrapper>
         </Container>
@@ -138,6 +160,7 @@ const ExpenseWrapper = styled.div`
   border: none;
   cursor: pointer;
   color: #039be5;
+
   &:hover {
     background-color: #039be5;
     color: white;
@@ -189,4 +212,10 @@ const Button = styled.div`
   &:hover {
     background-color: #039be5;
     color: white;
+`
+const ErrorWrapper = styled.div`
+  font-size: 14px;
+  opacity: 0.8;
+  color: rgba(255, 0, 0, 0.8);
+
 `

@@ -8,7 +8,7 @@ const formatDecimals = (item: number) => {
 }
 
 export const IncomeExpenseTable = () => {
-    let transactions = useSelector<AppRootStateType, Array<TransactionType>>(state => state.transaction.copyOfTransactions)
+    const transactions = useSelector<AppRootStateType, Array<TransactionType>>(state => state.transaction.copyOfTransactions)
     const amounts = transactions.map(el=>el.amount)
     const expense =  formatDecimals(amounts.filter(el=>el < 0)
         .reduce((acc, el)=> (acc = acc + el),0))

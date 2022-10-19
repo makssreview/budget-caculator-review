@@ -1,20 +1,18 @@
-import React, {useState} from 'react';
-import {PieChartGraph} from "./PieChartGraph";
-import {Chart} from "./Chart";
+import React from 'react';
+import {PieGraph} from "./PieGraph";
+import {RegularGraph} from "./RegularGraph";
 
 type PropsType={
     isPie:boolean
-    isChart:boolean
 }
 
 export const Graphs = (props:PropsType) => {
     return (
         <div>
             {props.isPie
-                ?<PieChartGraph/>
-                :<Chart/>
+                ?<PieGraph/>
+                :<RegularGraph/>
             }
-
         </div>
     );
 };

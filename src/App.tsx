@@ -1,8 +1,6 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import './App.css';
 import styled from "styled-components";
-import {IncomeExpenseTable} from "./components/history/IncomeExpenseTable";
-import {TransactionHistory} from "./components/history/TransactionHistory";
 import {TransactionForm} from "./components/form/TransactionForm";
 import {AppRootStateType} from "./store";
 import {useDispatch, useSelector} from "react-redux";
@@ -12,6 +10,7 @@ import pieChartPng from './components/images/pie-chart-683.png'
 import chartPng from './components/images/bar-chart-675.png'
 import plus from './components/images/pluss.png'
 import {Graphs} from "./components/graphs/Graphs";
+import {Overview} from "./components/history/Overview";
 
 
 function App() {
@@ -22,13 +21,15 @@ function App() {
 
     const [pieChart,setPieChart] = useState(false)
     const [chart,setChart] = useState(false)
+    const showGraph =()=>{
+        return (pieChart||chart)
+    }
 
     //show date range in filter
-    const dateFormat=()=>{
+    const dateFormat=useMemo(()=>{
         return dateRange.end.getMonth() +'/'+ dateRange.end.getDate() +'/'+ dateRange.end.getFullYear()+'-'
             +dateRange.start.getMonth() +'/'+ dateRange.start.getDate() +'/'+ dateRange.start.getFullYear()
-    }
-    console.log({chart, pieChart})
+    },[dateRange])
     return (
         <div>
             <Container>
@@ -36,12 +37,12 @@ function App() {
                     <FilterItem onClick={()=>dispatch(filterTransaction(new Date().getMonth()-1))}>LAST MONTH</FilterItem>
                     <FilterItem onClick={()=>dispatch(filterTransaction(new Date().getMonth()))}>THIS MONTH</FilterItem>
                     {/* dispatch true if click on date filter */}
-                    <Calendar onClick={()=>dispatch(changePopUpCalendar(true))}>{dateFormat()}</Calendar>
+                    <Calendar onClick={()=>dispatch(changePopUpCalendar(true))}>{dateFormat}</Calendar>
                 </Filter>
-                {popUpCalendar ? <FilterByDateRange/>:''}
-                <IncomeExpenseTable/>
-                {pieChart||chart?<Graphs isPie={pieChart} isChart={chart}/>:<TransactionHistory/>}
-                {popUpForm ? <TransactionForm/> : ''}
+                {popUpCalendar && <FilterByDateRange/>}
+                <Overview isPie={pieChart} isChart={chart}/>
+                {showGraph()  && <Graphs isPie={pieChart}/>}
+                {popUpForm && <TransactionForm/>}
                 <ButtonsPositionWrapper>
                        <ImgWrapper onClick={()=>{
                            setPieChart(!pieChart)
