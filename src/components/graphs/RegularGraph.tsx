@@ -10,35 +10,31 @@ const formatDecimals = (item: number) => {
     return Number(item.toFixed(2))
 }
 type ArrayType = {
-    date: Date
+    date: string
     amount: number
 }
 
 export const RegularGraph = () => {
     const data = useSelector<AppRootStateType, Array<TransactionType>>(state => state.transaction.copyOfTransactions)
 
-    const cashFlowGraph = () => {
-        const arrayExpense: Array<ArrayType> = []
-        //https://stackoverflow.com/questions/71050536/how-to-sum-data-by-date-filter-in-javascript
-        data.reduce(function (res: any, value) {
-            const onlyDate = value.date.toLocaleDateString()
 
-            // Second approach is just to take first 10 characters of a substring like this:
-            // let onlyDate = value.date.substring(0, 10);
-            if (!res[onlyDate]) {
-                res[onlyDate] = {date: onlyDate, amount: 0};
-                arrayExpense.push(res[onlyDate])
-            }
-            res[onlyDate].amount += value.amount;
-            return res;
-        }, {})
-        return arrayExpense
-    }
-   // https://bobbyhadz.com/blog/javascript-sort-array-of-objects-by-date-property
-        const sortedArrayExpense =
-            [...cashFlowGraph()].sort((objA, objB) => Number(objB.date) - Number(objA.date),)
+    const cashFlowArray = data.reduce((acc, current) => {
+        const sumOfAmount = Math.abs(data.filter(el => el.date.toLocaleDateString() === current.date.toLocaleDateString()).map(el => el.amount)
+            .reduce((acc, el) => acc + el, 0))
+        const el ={date:current.date.toLocaleDateString(), amount:sumOfAmount}
+        return [...acc, el]
+        //need to filter results, don't need the same days displaying twice
+    }, [] as Array<ArrayType> )
 
-    const filterData = sortedArrayExpense.map((el, index) => ({
+    const filteredArray= cashFlowArray.filter((thing, index, self) =>
+        index === self.findIndex((t) => (
+            t.date === thing.date
+        )))
+
+    const sortedArray = filteredArray.sort((a,b) =>
+        Date.parse(a.date) - Date.parse(b.date))
+
+    const graphData = sortedArray.map((el, index) => ({
         xAxis: el.date,
         expense: formatDecimals(el.amount),
     }))
@@ -48,7 +44,7 @@ export const RegularGraph = () => {
         <div>
             {data.length > 0 &&
                 <Container>
-                    <BarChart width={430} height={250} data={filterData}>
+                    <BarChart width={430} height={250} data={graphData}>
                         <CartesianGrid strokeDasharray="3 3"/>
                         <XAxis dataKey='xAxis' tick={{fontSize: 8}}/>
                         <YAxis/>

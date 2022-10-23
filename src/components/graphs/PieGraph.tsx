@@ -16,85 +16,77 @@ export const PieGraph = () => {
     const categoriesIncome = ['Salary', 'Business', 'Transfer', 'Interest', 'Other Income']
     const COLORS = ['green', '#039be5', '#e51c23', '#611d98', '#48a9a6', 'D4B483'];
     const [changePie, setChangePie] = useState(false)
+    const pieName = changePie ? 'Inflow' : 'Outflow'
+    const pieType = changePie ? categoriesIncome : categoriesExpense
 
-    const pieName = () => {
-        return changePie ? 'Inflow' : 'Outflow'
-    }
-    const pieType = () => {
-        return changePie ? categoriesIncome : categoriesExpense
-    }
-    const pieGraph = () => {
-        const array: Array<Types> = []
-        for (let i = 0; i < pieType().length; i++) {
-            const sumOfAmount = Math.abs(data.filter(el => el.category.value === pieType()[i]).map(el => el.amount)
+        const pieData = pieType.reduce((acc, current) => {
+            const sumOfAmount = Math.abs(data.filter(el => el.category.value === current).map(el => el.amount)
                 .reduce((el, acc) => acc + el, 0))
-            if (sumOfAmount > 0) {
-                array.push({name: pieType()[i], sumOfAmount})
-            }
-        }
-        return array
+           return sumOfAmount > 0 ? [...acc, {name:current,sumOfAmount}]: acc
+        }, [] as object[])
+
+
+        return (
+            <div>
+                {data.length > 0 &&
+                    <Container>
+                        <PieWrapper>
+                            <ChangePieWrapper onClick={() => setChangePie(!changePie)}>{pieName}</ChangePieWrapper>
+                            <PieChart
+                                width={450}
+                                height={250}>
+                                <Pie
+                                    data={pieData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={80}
+                                    outerRadius={90}
+                                    fill="#8884d8"
+                                    paddingAngle={5}
+                                    dataKey="sumOfAmount"
+                                    label={(entry) => entry.name}
+                                    opacity={0.9}
+                                >
+                                    {pieData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length + 1]}
+                                              fontSize={15}/>
+                                    ))}
+                                </Pie>
+                            </PieChart>
+
+                        </PieWrapper>
+                    </Container>}
+            </div>
+        );
     }
+    ;
 
-    return (
-        <div>
-            {data.length > 0 &&
-                <Container>
-                    <PieWrapper>
-                        <ChangePieWrapper onClick={() => setChangePie(!changePie)}>{pieName()}</ChangePieWrapper>
-                        <PieChart
-                            width={450}
-                            height={250}>
-                            <Pie
-                                data={pieGraph()}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={80}
-                                outerRadius={90}
-                                fill="#8884d8"
-                                paddingAngle={5}
-                                dataKey="sumOfAmount"
-                                label={(entry) => entry.name}
-                                opacity={0.9}
-                            >
-                                {pieGraph().map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length + 1]}
-                                          fontSize={15}/>
-                                ))}
-                            </Pie>
-                        </PieChart>
+    const Container = styled.div`
+      width: 450px;
+      background: #f4f4f4;
+      justify-content: center;
+    `
+    const PieWrapper = styled.div`
+      width: 450px;
+      height: 300px;
 
-                    </PieWrapper>
-                </Container>}
-        </div>
-    );
-};
+    `
+    const ChangePieWrapper = styled.div`
+      position: relative;
+      left: 20px;
+      top: 20px;
+      background-color: white;
+      color: #039be5;
+      height: 40px;
+      width: 80px;
+      border-radius: 70px;
+      text-align: center;
+      padding: 8px;
+      cursor: pointer;
 
-const Container = styled.div`
-  width: 450px;
-  background: #f4f4f4;
-  justify-content: center;
-`
-const PieWrapper = styled.div`
-  width: 450px;
-  height: 300px;
+      &:hover {
+        background-color: #039be5;
+        color: white;
+        cursor: pointer;
 
-`
-const ChangePieWrapper = styled.div`
-  position: relative;
-  left: 20px;
-  top: 20px;
-  background-color: white;
-  color: #039be5;
-  height: 40px;
-  width: 80px;
-  border-radius: 70px;
-  text-align: center;
-  padding: 8px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #039be5;
-    color: white;
-    cursor: pointer;
-
-`
+    `

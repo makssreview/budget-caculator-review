@@ -21,9 +21,7 @@ function App() {
 
     const [pieChart,setPieChart] = useState(false)
     const [chart,setChart] = useState(false)
-    const showGraph =()=>{
-        return (pieChart||chart)
-    }
+    const showGraph = pieChart||chart
 
     //show date range in filter
     const dateFormat=useMemo(()=>{
@@ -41,7 +39,7 @@ function App() {
                 </Filter>
                 {popUpCalendar && <FilterByDateRange/>}
                 <Overview isPie={pieChart} isChart={chart}/>
-                {showGraph()  && <Graphs isPie={pieChart}/>}
+                {showGraph  && <Graphs isPie={pieChart}/>}
                 {popUpForm && <TransactionForm/>}
                 <ButtonsPositionWrapper>
                        <ImgWrapper onClick={()=>{
