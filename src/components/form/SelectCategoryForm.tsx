@@ -126,6 +126,10 @@ export type PropsType ={
     category:(value:string,label:string)=>void
     isExpense:boolean
 }
+export type SelectorType = {
+    value:string,
+    label:string
+}
 export const SelectCategoryForm = (props:PropsType) => {
     const [category, setCategory] =useState()
 

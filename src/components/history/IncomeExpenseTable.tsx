@@ -11,9 +11,9 @@ export const IncomeExpenseTable = () => {
     const transactions = useSelector<AppRootStateType, Array<TransactionType>>(state => state.transaction.copyOfTransactions)
     const amounts = transactions.map(el=>el.amount)
     const expense =  formatDecimals(amounts.filter(el=>el < 0)
-        .reduce((acc, el)=> (acc = acc + el),0))
+        .reduce((acc, el)=> (acc + el),0))
     const income =  formatDecimals(amounts.filter(el=>el > 0)
-        .reduce((acc, el)=> (acc = acc + el),0))
+        .reduce((acc, el)=> (acc + el),0))
     const total = formatDecimals((Number(income) - Number(-expense)))
 
     return (

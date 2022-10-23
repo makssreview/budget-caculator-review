@@ -34,7 +34,7 @@ export const RegularGraph = () => {
     const sortedArray = filteredArray.sort((a,b) =>
         Date.parse(a.date) - Date.parse(b.date))
 
-    const graphData = sortedArray.map((el, index) => ({
+    const graphData = sortedArray.map((el) => ({
         xAxis: el.date,
         expense: formatDecimals(el.amount),
     }))

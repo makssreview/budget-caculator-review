@@ -5,11 +5,6 @@ import {TransactionType} from "../../store/slice";
 import {Cell, Pie, PieChart} from "recharts";
 import styled from "styled-components";
 
-export type Types = {
-    name: string
-    sumOfAmount: number
-}
-
 export const PieGraph = () => {
     const data = useSelector<AppRootStateType, Array<TransactionType>>(state => state.transaction.copyOfTransactions)
     const categoriesExpense = ['Rental', 'Transportation', 'Utility', 'Groceries', 'Education', 'Health', 'Coffee', 'Fun Money', 'Other',]

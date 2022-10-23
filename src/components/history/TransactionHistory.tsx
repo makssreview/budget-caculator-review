@@ -25,7 +25,7 @@ export const TransactionHistory = () => {
                             <TextWrapper>{el.text}</TextWrapper>
                             <SpanWrapper amount={el.amount}>{el.amount}$</SpanWrapper>
                             <ButtonWrapper
-                                onClick={(e) =>
+                                onClick={() =>
                                     dispatch(deleteTransaction(el.id))}>x</ButtonWrapper>
                         </DivWrapper>
                     </ListWrapper>
