@@ -43,7 +43,7 @@ export const TransactionForm = () => {
         dispatch(changePopUp(popUpForm))
 
     }
-    const ExpenseHandler = () => {
+    const expenseHandler = () => {
         //Change Button
         setForm({...form, amount: 0})
         setExpense(!expense)
@@ -75,7 +75,7 @@ export const TransactionForm = () => {
                     <FaWindowClose onClick={onPopUpHandler}/>
                 </ButtonWrapper>
                 <InputWrapper>
-                    <ExpenseWrapper onClick={ExpenseHandler}>{buttonNameChange}</ExpenseWrapper>
+                    <ExpenseWrapper onClick={expenseHandler}>{buttonNameChange}</ExpenseWrapper>
                     <SelectCategoryForm category={categoryItems} isExpense={expense}/>
                     <CategoryWrapper type='number' value={form.amount}
                                      onChange={AmountHandler}

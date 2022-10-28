@@ -8,13 +8,13 @@ type PropsType = {
 }
 
 export const Overview = (props: PropsType) => {
-    const isShown = props.isPie || props.isChart
+    const isTransactionHistoryShown = !(props.isPie || props.isChart)
 
     return (
         <div>
             <IncomeExpenseTable/>
             {
-                !isShown
+                isTransactionHistoryShown
                 && <TransactionHistory/>
             }
         </div>
