@@ -17,16 +17,19 @@ export const TransactionHistory = () => {
                 return (
                     <ListWrapper key={el.id}>
                         <DivWrapper>
-                            <ImgWrapper src={el.category.src}/>
+                            <ImgWrapper src={el.category.src}
+                                        onMouseOver={e => (e.currentTarget.src = 'https://cdn-icons-png.flaticon.com/128/3687/3687412.png')}
+                                        onMouseOut={e => (e.currentTarget.src = el.category.src)}
+                                        onClick={() =>
+                                            dispatch(deleteTransaction(el.id))}
+                                       />
                             <ElementWrapper>
                                 <div>{el.category.value}</div>
                                 <DateWrapper>{el.date.toLocaleDateString('en-US')}</DateWrapper>
                             </ElementWrapper>
                             <TextWrapper>{el.text}</TextWrapper>
                             <SpanWrapper amount={el.amount}>{el.amount}$</SpanWrapper>
-                            <ButtonWrapper
-                                onClick={() =>
-                                    dispatch(deleteTransaction(el.id))}>x</ButtonWrapper>
+
                         </DivWrapper>
                     </ListWrapper>
 
@@ -76,6 +79,7 @@ const TextWrapper = styled.div`
 const ImgWrapper = styled.img`
   width: 40px;
   height: 40px;
+  cursor: pointer;
 `
 const SpanWrapper = styled.span<ColorProps>`
   justify-content: center;
@@ -83,21 +87,5 @@ const SpanWrapper = styled.span<ColorProps>`
   position: absolute;
   right: 16px;
   color: ${props=>props.amount >0 ? '#039be5':'#e51c23'}
-`
-const ButtonWrapper = styled.button`
-  cursor: pointer;
-  background-color: rgba(255, 63, 101, 0.56);
-  border: 0;
-  color: #ffffff;
-  font-size: 20px;
-  line-height: 20px;
-  padding: 2px 5px;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translate(-100%, -50%);
-  opacity: 0.2;
-  &:hover {
-    background-color: #039be5;
-    color: white;
+  
 `

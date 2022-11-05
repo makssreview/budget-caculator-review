@@ -19,7 +19,7 @@ export const RegularGraph = () => {
 
 
     const cashFlowArray = data.reduce((acc, current) => {
-        const sumOfAmount = Math.abs(data.filter(el => el.date.toLocaleDateString() === current.date.toLocaleDateString()).map(el => el.amount)
+        const sumOfAmount = (data.filter(el => el.date.toLocaleDateString() === current.date.toLocaleDateString()).map(el => el.amount)
             .reduce((acc, el) => acc + el, 0))
         const el ={date:current.date.toLocaleDateString(), amount:sumOfAmount}
         return [...acc, el]
